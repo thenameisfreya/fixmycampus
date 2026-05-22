@@ -1,5 +1,7 @@
 const express = require('express');
 const Issue = require('../models/Issue');
+const Notification = require('../models/Notification');
+const sendEmail = require('../utils/sendEmail');
 const { verifyToken } = require('../middleware/verifyToken');
 
 const router = express.Router();
@@ -42,6 +44,7 @@ router.get('/:id', verifyToken, async (req, res) => {
   if (!issue) {
     return res.status(404).json({ message: 'Issue not found' });
   }
+
   res.json(issue);
 });
 
@@ -50,17 +53,19 @@ router.post('/', verifyToken, async (req, res) => {
     ...req.body,
     submittedBy: req.user._id
   });
+
   res.status(201).json(issue);
 });
 
 router.put('/:id', verifyToken, async (req, res) => {
-  const issue = await Issue.findById(req.params.id);
+  const issue = await Issue.findById(req.params.id)
+    .populate('submittedBy', 'name email');
 
   if (!issue) {
     return res.status(404).json({ message: 'Issue not found' });
   }
 
-  const isOwner = issue.submittedBy.toString() === req.user._id.toString();
+  const isOwner = issue.submittedBy._id.toString() === req.user._id.toString();
   const isFacilities = ['facilities', 'staff', 'admin'].includes(req.user.role);
 
   if (!isOwner && !isFacilities) {
@@ -76,6 +81,20 @@ router.put('/:id', verifyToken, async (req, res) => {
     req.body,
     { new: true }
   );
+
+  if (req.body.status && req.body.status !== issue.status) {
+    await Notification.create({
+      recipient: issue.submittedBy._id,
+      issue: issue._id,
+      message: Your issue "${issue.title}" at ${issue.location.building} has been updated to ${req.body.status}
+    });
+
+    await sendEmail(
+      issue.submittedBy.email,
+      Reficere Update — ${issue.title},
+      Your maintenance issue at ${issue.location.building} has been updated to <strong>${req.body.status}</strong>. Log in to Reficere to view the full details.
+    );
+  }
 
   res.json(updatedIssue);
 });
