@@ -8,6 +8,7 @@ const issueRoutes = require('./routes/issues');
 const userRoutes = require('./routes/users');
 const resourceRoutes = require('./routes/resources');
 const handleErrors = require('./middleware/handleErrors');
+const notificationRoutes = require('./routes/notifications');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(cors({
 app.use('/api/users', userRoutes);
 app.use('/api/issues', issueRoutes);
 app.use('/api/resources', resourceRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/api/status', (req, res) => res.json({ 
   message: 'FixMyCampus API is running',
