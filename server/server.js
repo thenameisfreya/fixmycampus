@@ -7,8 +7,8 @@ require('dotenv').config();
 const issueRoutes = require('./routes/issues');
 const userRoutes = require('./routes/users');
 const resourceRoutes = require('./routes/resources');
-const handleErrors = require('./middleware/handleErrors');
 const notificationRoutes = require('./routes/notifications');
+const handleErrors = require('./middleware/handleErrors');
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.use('/api/resources', resourceRoutes);
 app.use('/api/notifications', notificationRoutes);
 
 app.get('/api/status', (req, res) => res.json({ 
-  message: 'FixMyCampus API is running',
+  message: 'Reficere API is running',
   timestamp: new Date()
 }));
 
@@ -38,7 +38,7 @@ const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Database connected successfully');
-    app.listen(PORT, () => console.log(Server started on port ${PORT}));
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (error) {
     console.error('Failed to connect to database:', error.message);
     process.exit(1);

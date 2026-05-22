@@ -10,7 +10,7 @@ const sendEmail = async (recipientEmail, subject, message) => {
   });
 
   const mailOptions = {
-    from: Reficere St Marys <${process.env.EMAIL_ADDRESS}>,
+    from: `Reficere St Marys <${process.env.EMAIL_ADDRESS}>`,
     to: recipientEmail,
     subject: subject,
     html: `

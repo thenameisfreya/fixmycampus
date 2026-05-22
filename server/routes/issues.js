@@ -86,13 +86,13 @@ router.put('/:id', verifyToken, async (req, res) => {
     await Notification.create({
       recipient: issue.submittedBy._id,
       issue: issue._id,
-      message: Your issue "${issue.title}" at ${issue.location.building} has been updated to ${req.body.status}
+      message: `Your issue "${issue.title}" at ${issue.location.building} has been updated to ${req.body.status}`
     });
 
     await sendEmail(
       issue.submittedBy.email,
-      Reficere Update — ${issue.title},
-      Your maintenance issue at ${issue.location.building} has been updated to <strong>${req.body.status}</strong>. Log in to Reficere to view the full details.
+      `Reficere Update — ${issue.title}`,
+      `Your maintenance issue at ${issue.location.building} has been updated to <strong>${req.body.status}</strong>. Log in to Reficere to view the full details.`
     );
   }
 

@@ -10,7 +10,7 @@ const handleErrors = (err, req, res, next) => {
   if (err.code === 11000) {
     statusCode = 400;
     const field = Object.keys(err.keyValue)[0];
-    message = ${field} is already registered;
+    message = `${field} is already registered`;
   }
 
   if (err.name === 'ValidationError') {
