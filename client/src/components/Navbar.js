@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { getUnreadCount } from '../services/api';
@@ -9,7 +9,6 @@ const Navbar = () => {
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,7 +41,6 @@ const Navbar = () => {
   };
 
   const isActive = (path) => location.pathname === path;
-
   const isFacilities = user && ['facilities', 'staff', 'admin'].includes(user.role);
 
   return (
@@ -215,10 +213,7 @@ const Navbar = () => {
           alignItems: 'center',
           gap: '12px'
         }}>
-          <span style={{
-            color: '#a0a0a0',
-            fontSize: '13px'
-          }}>
+          <span style={{ color: '#a0a0a0', fontSize: '13px' }}>
             {user && user.name}
           </span>
           <button
@@ -251,3 +246,5 @@ const Navbar = () => {
     </nav>
   );
 };
+
+export default Navbar;

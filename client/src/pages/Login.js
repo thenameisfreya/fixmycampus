@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { loginUser } from '../services/api';
@@ -10,6 +10,83 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const particles = [];
+    const count = 80;
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 2 + 1,
+        color: Math.random() > 0.3 ? '0, 255, 135' : '220, 30, 60'
+      });
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.color + ', 0.8)';
+        ctx.fill();
+
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(' + p.color + ', 0.5)';
+      });
+
+      ctx.shadowBlur = 0;
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 150) {
+            const opacity = (1 - dist / 150) * 0.3;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = 'rgba(0, 255, 135, ' + opacity + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,47 +107,6 @@ const Login = () => {
     }
   };
 
-  const lightStreaks = [];
-  for (let i = 0; i < 60; i++) {
-    const rand = Math.random();
-    let color;
-    if (rand > 0.6) {
-      color = '0, 255, 135';
-    } else if (rand > 0.3) {
-      color = '220, 30, 60';
-    } else {
-      color = '255, 60, 80';
-    }
-    lightStreaks.push({
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      width: Math.random() * 3 + 1,
-      height: Math.random() * 80 + 20,
-      color: color,
-      opacity: Math.random() * 0.15 + 0.05,
-      rotation: Math.random() * 10 - 5
-    });
-  }
-
-  const buildings = [];
-  for (let i = 0; i < 40; i++) {
-    const height = Math.random() * 60 + 20;
-    const windowCount = Math.floor(Math.random() * 4 + 2);
-    const windows = [];
-    for (let j = 0; j < windowCount; j++) {
-      const isGreen = Math.random() > 0.5;
-      const isRed = !isGreen && Math.random() > 0.5;
-      windows.push({
-        left: Math.random() * 70 + 10,
-        top: Math.random() * 70 + 10,
-        isGreen: isGreen,
-        isRed: isRed,
-        opacity: Math.random() * 0.6 + 0.3
-      });
-    }
-    buildings.push({ height, windows, hasLights: Math.random() > 0.3 });
-  }
-
   return (
     <div style={{
       minHeight: '100vh',
@@ -79,14 +115,14 @@ const Login = () => {
       alignItems: 'center',
       justifyContent: 'center',
       fontFamily: "'Segoe UI', sans-serif",
-      overflow: 'hidden'
+      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #020c08 0%, #050505 40%, #080c08 70%, #020808 100%)'
     }}>
 
-      <div style={{
+      <canvas ref={canvasRef} style={{
         position: 'absolute',
         inset: 0,
-        background: 'linear-gradient(135deg, #050505 0%, #0d0505 25%, #080808 50%, #050d05 75%, #050505 100%)',
-        zIndex: 0
+        zIndex: 1
       }} />
 
       <div style={{
@@ -95,9 +131,9 @@ const Login = () => {
         right: '-100px',
         width: '500px',
         height: '500px',
-        background: 'radial-gradient(circle, rgba(220, 30, 60, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(220, 30, 60, 0.06) 0%, transparent 70%)',
         borderRadius: '50%',
-        zIndex: 1,
+        zIndex: 2,
         pointerEvents: 'none'
       }} />
 
@@ -107,132 +143,17 @@ const Login = () => {
         left: '-100px',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(0, 255, 135, 0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(0, 255, 135, 0.05) 0%, transparent 70%)',
         borderRadius: '50%',
-        zIndex: 1,
-        pointerEvents: 'none'
-      }} />
-
-      <div style={{
-        position: 'absolute',
-        top: '30%',
-        left: '30%',
-        width: '300px',
-        height: '300px',
-        background: 'radial-gradient(circle, rgba(180, 20, 40, 0.05) 0%, transparent 70%)',
-        borderRadius: '50%',
-        zIndex: 1,
-        pointerEvents: 'none'
-      }} />
-
-      <div style={{
-        position: 'absolute',
-        inset: 0,
         zIndex: 2,
-        overflow: 'hidden'
-      }}>
-        {lightStreaks.map((streak, i) => (
-          <div key={i} style={{
-            position: 'absolute',
-            left: streak.left + '%',
-            top: streak.top + '%',
-            width: streak.width + 'px',
-            height: streak.height + 'px',
-            background: 'rgba(' + streak.color + ', ' + streak.opacity + ')',
-            borderRadius: '2px',
-            transform: 'rotate(' + streak.rotation + 'deg)',
-            filter: 'blur(0.5px)'
-          }} />
-        ))}
-      </div>
-
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '35%',
-        zIndex: 3,
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        gap: '3px',
-        padding: '0 20px'
-      }}>
-        {buildings.map((building, i) => (
-          <div key={i} style={{
-            flex: 1,
-            height: building.height + '%',
-            background: 'linear-gradient(180deg, rgba(15, 8, 8, 0.95) 0%, rgba(8, 5, 5, 0.98) 100%)',
-            borderRadius: '2px 2px 0 0',
-            position: 'relative',
-            border: '1px solid rgba(220, 30, 60, 0.04)',
-            borderBottom: 'none'
-          }}>
-            {building.hasLights && building.windows.map((win, j) => (
-              <div key={j} style={{
-                position: 'absolute',
-                left: win.left + '%',
-                top: win.top + '%',
-                width: '3px',
-                height: '3px',
-                background: win.isGreen
-                  ? 'rgba(0, 255, 135, ' + win.opacity + ')'
-                  : win.isRed
-                  ? 'rgba(220, 30, 60, ' + win.opacity + ')'
-                  : 'rgba(255, 220, 100, ' + win.opacity + ')',
-                borderRadius: '50%',
-                boxShadow: win.isGreen
-                  ? '0 0 4px rgba(0, 255, 135, 0.8)'
-                  : win.isRed
-                  ? '0 0 4px rgba(220, 30, 60, 0.8)'
-                  : '0 0 4px rgba(255, 220, 100, 0.8)'
-              }} />
-            ))}
-          </div>
-        ))}
-      </div>
-
-      <div style={{
-        position: 'absolute',
-        bottom: '32%',
-        left: 0,
-        right: 0,
-        height: '3px',
-        background: 'linear-gradient(90deg, transparent, rgba(220, 30, 60, 0.2), rgba(0, 255, 135, 0.15), rgba(220, 30, 60, 0.2), transparent)',
-        zIndex: 4,
-        filter: 'blur(1px)'
+        pointerEvents: 'none'
       }} />
-
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: 'linear-gradient(180deg, rgba(5,5,5,0.4) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)',
-        zIndex: 5
-      }} />
-
-      <div style={{
-        position: 'absolute',
-        top: '15%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        color: 'rgba(220, 30, 60, 0.025)',
-        fontSize: '280px',
-        fontWeight: '900',
-        letterSpacing: '-10px',
-        userSelect: 'none',
-        pointerEvents: 'none',
-        zIndex: 6,
-        whiteSpace: 'nowrap'
-      }}>
-        REFICERE
-      </div>
 
       <div style={{
         width: '100%',
         maxWidth: '420px',
         padding: '48px',
-        background: 'rgba(8, 10, 8, 0.80)',
+        background: 'rgba(5, 12, 8, 0.82)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         borderRadius: '24px',
