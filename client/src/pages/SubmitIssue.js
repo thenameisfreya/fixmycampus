@@ -15,8 +15,10 @@ const CATEGORIES = [
 ];
 
 const BUILDINGS = [
-  'K Block','Main Building','Waldegrave Suite','Block B','Block C',
-  'Sports Centre','Library','Student Union','Chaplaincy','Car Park','Other'
+  'K Block', 'Main Building', 'Waldegrave Suite', 'Block B', 'Block C',
+  'Block D', 'Block E', 'Block F', 'Block G', '1850 Theatre',
+  'Sports Centre', 'Library', 'Student Union', 'Chaplaincy', 'Car Park',
+  'The Pub', 'Other'
 ];
 
 const PRIORITIES = [

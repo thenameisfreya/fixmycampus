@@ -9,43 +9,27 @@ const issueSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      'Electrical',
-      'Plumbing',
-      'Heating',
-      'Cleaning',
-      'Structural',
-      'IT Equipment',
-      'Furniture',
-      'Windows and Doors',
-      'Lighting',
-      'Pest Control',
-      'Lift and Accessibility',
-      'Other'
+      'Electrical', 'Plumbing', 'Heating', 'Cleaning', 'Structural',
+      'IT Equipment', 'Furniture', 'Windows and Doors', 'Lighting',
+      'Pest Control', 'Lift and Accessibility', 'Other'
     ]
   },
   location: {
-    building: {
-      type: String,
-      required: true,
-      enum: [
-        'Waldegrave Suite',
-        'Block B',
-        'Block C',
-        'Block D',
-        'Block E',
-        'Block F',
-        'Block G',
-        'K Block',
-        '1850 Theatre',
-        'The Pub',
-        'Other'
-      ]
-    },
-    room: {
-      type: String,
-      default: ''
-    }
+  building: {
+    type: String,
+    required: true,
+    enum: [
+      'K Block', 'Main Building', 'Waldegrave Suite', 'Block B', 'Block C',
+      'Block D', 'Block E', 'Block F', 'Block G', 'K Block', '1850 Theatre',
+      'Sports Centre', 'Library', 'Student Union', 'Chaplaincy', 'Car Park',
+      'The Pub', 'Other'
+    ]
   },
+  room: {
+    type: String,
+    default: ''
+  }
+},
   description: {
     type: String,
     required: true
@@ -75,9 +59,10 @@ const issueSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-      author: {
-        type: String,
-        default: 'Facilities Team'
+      user: {
+        name: { type: String, default: 'Facilities Team' },
+        email: { type: String, default: '' },
+        role: { type: String, default: 'facilities' }
       },
       createdAt: {
         type: Date,
