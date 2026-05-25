@@ -153,7 +153,7 @@ useEffect(() => {
             onMouseEnter={e => { if(!item.active) e.currentTarget.style.background='rgba(255,255,255,0.08)'; }}
             onMouseLeave={e => { if(!item.active) e.currentTarget.style.background='transparent'; }}
           >
-            <i className={item.icon} style={{ fontSize:'18px', color: item.active ? '#00e87a' : 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
+            <i className={'ti ' + item.icon} style={{ fontSize:'18px', color: item.active ? '#00e87a' : 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
           </div>
         ))}
         <div style={{ marginTop:'auto', width:'28px', height:'28px', borderRadius:'50%', background:'rgba(251,191,36,0.2)', border:'1px solid rgba(251,191,36,0.4)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fbbf24', fontSize:'11px', fontWeight:'700', cursor:'pointer' }}

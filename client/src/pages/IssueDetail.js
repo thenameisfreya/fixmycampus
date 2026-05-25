@@ -46,11 +46,11 @@ const StarRating = ({ onRate }) => {
   const [submitted, setSubmitted] = useState(false);
 
   const messages = {
-    1: 'Really sorry to hear that. We\'ll look into how we can improve.',
-    2: 'Thanks for the feedback. We\'ll try to do better.',
-    3: 'Thanks for rating us. We\'ll keep working on it.',
-    4: 'Great to hear — thanks for your feedback!',
-    5: 'Amazing! Really glad we could sort this for you!'
+    1: "Really sorry to hear that. We'll look into how we can improve.",
+    2: "Thanks for the feedback. We'll try to do better.",
+    3: "Thanks for rating us. We'll keep working on it.",
+    4: "Great to hear — thanks for your feedback!",
+    5: "Amazing! Really glad we could sort this for you!"
   };
 
   const handleRate = (n) => {
@@ -108,6 +108,7 @@ const IssueDetail = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animId;
     const resize = () => {
@@ -299,10 +300,10 @@ const IssueDetail = () => {
               const active = stepNum === currentStep;
               return (
                 <div key={step.key} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'6px', zIndex:2, width:'25%' }}>
-                  <div style={{ width:'26px', height:'26px', borderRadius:'50%', background: done ? '#dcfce7' : active ? '#fef9c3' : '#f3f4f6', border: done ? '2px solid #16a34a' : active ? '2px solid #ca8a04' : '2px dashed #d1d5db', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    <i className={step.icon} style={{ fontSize:'12px', color: done ? '#16a34a' : active ? '#ca8a04' : '#d1d5db' }} aria-hidden="true" />
+                  <div style={{ width:'26px', height:'26px', borderRadius:'50%', background: done?'#dcfce7':active?'#fef9c3':'#f3f4f6', border: done?'2px solid #16a34a':active?'2px solid #ca8a04':'2px dashed #d1d5db', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    <i className={step.icon} style={{ fontSize:'12px', color: done?'#16a34a':active?'#ca8a04':'#d1d5db' }} aria-hidden="true" />
                   </div>
-                  <p style={{ color: done ? '#16a34a' : active ? '#ca8a04' : '#d1d5db', fontSize:'10px', fontWeight: done||active ? '600' : '400', textAlign:'center', margin:0 }}>{step.label}</p>
+                  <p style={{ color: done?'#16a34a':active?'#ca8a04':'#d1d5db', fontSize:'10px', fontWeight: done||active?'600':'400', textAlign:'center', margin:0 }}>{step.label}</p>
                 </div>
               );
             })}
@@ -317,9 +318,9 @@ const IssueDetail = () => {
             </div>
             <div
               onClick={() => setEmailNotif(!emailNotif)}
-              style={{ width:'38px', height:'22px', borderRadius:'11px', background: emailNotif ? '#00e87a' : '#e5e7eb', position:'relative', cursor:'pointer', transition:'background 0.2s ease', flexShrink:0 }}
+              style={{ width:'38px', height:'22px', borderRadius:'11px', background: emailNotif?'#00e87a':'#e5e7eb', position:'relative', cursor:'pointer', transition:'background 0.2s ease', flexShrink:0 }}
             >
-              <div style={{ width:'18px', height:'18px', borderRadius:'50%', background:'#fff', position:'absolute', top:'2px', left: emailNotif ? '18px' : '2px', transition:'left 0.2s ease', boxShadow:'0 1px 3px rgba(0,0,0,0.2)' }} />
+              <div style={{ width:'18px', height:'18px', borderRadius:'50%', background:'#fff', position:'absolute', top:'2px', left: emailNotif?'18px':'2px', transition:'left 0.2s ease', boxShadow:'0 1px 3px rgba(0,0,0,0.2)' }} />
             </div>
           </div>
         </div>
@@ -366,7 +367,7 @@ const IssueDetail = () => {
             <button
               onClick={handleComment}
               disabled={submitting || !comment.trim()}
-              style={{ padding:'9px 18px', background: comment.trim() ? 'linear-gradient(135deg,#00e87a,#00b85e)' : '#f3f4f6', border:'none', borderRadius:'8px', color: comment.trim() ? '#1a1a2e' : '#9ca3af', fontSize:'12px', fontWeight:'700', cursor: comment.trim() ? 'pointer' : 'not-allowed', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.2s', flexShrink:0 }}
+              style={{ padding:'9px 18px', background: comment.trim()?'linear-gradient(135deg,#00e87a,#00b85e)':'#f3f4f6', border:'none', borderRadius:'8px', color: comment.trim()?'#1a1a2e':'#9ca3af', fontSize:'12px', fontWeight:'700', cursor: comment.trim()?'pointer':'not-allowed', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.2s', flexShrink:0 }}
             >
               {submitting ? 'Sending...' : 'Send'}
             </button>
