@@ -21,8 +21,7 @@ export const getIssue = (id) => API.get('/issues/' + id);
 export const createIssue = (data) => API.post('/issues', data);
 export const updateIssue = (id, data) => API.put('/issues/' + id, data);
 export const deleteIssue = (id) => API.delete('/issues/' + id);
-export const addComment = (id, text) => API.post('/issues/' + id + '/comments', { text });
-export const getAnalytics = () => API.get('/issues/analytics');
+export const addComment = (id, data) => API.post('/issues/' + id + '/comments', data);export const getAnalytics = () => API.get('/issues/analytics');
 
 export const getNotifications = () => API.get('/notifications');
 export const getUnreadCount = () => API.get('/notifications/unread');
