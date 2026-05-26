@@ -12,6 +12,8 @@ import Notifications from './pages/Notifications';
 import Help from './pages/Help';
 import AllIssues from './pages/AllIssues';
 import FacilitiesHelp from './pages/FacilitiesHelp';
+import MyReports from './pages/MyReports';
+import StudentAnalytics from './pages/StudentAnalytics';
 
 const PrivateRoute = ({ children, roles }) => {
   const { user, loading } = React.useContext(AuthContext);
@@ -95,6 +97,18 @@ function App() {
           <Route path="/facilitieshelp" element={
             <PrivateRoute roles={['facilities','staff','admin']}>
               <FacilitiesHelp />
+            </PrivateRoute>
+          } />
+
+          <Route path="/myreports" element={
+            <PrivateRoute>
+              <MyReports />
+            </PrivateRoute>
+          } />
+
+          <Route path="/studentanalytics" element={
+            <PrivateRoute>
+              <StudentAnalytics />
             </PrivateRoute>
           } />
 

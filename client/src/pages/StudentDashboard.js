@@ -156,13 +156,13 @@ const StudentDashboard = () => {
   const filters = ['All', 'New', 'In Progress', 'Awaiting Parts', 'Resolved'];
 
   const NAV = [
-    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/dashboard', active:true },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/dashboard',        active:true },
     { icon:'ti-plus',             label:'Report Issue',  path:'/submit' },
-    { icon:'ti-list-check',       label:'My Reports',   path:'/dashboard', badge: issues.length },
+    { icon:'ti-list-check',       label:'My Reports',   path:'/myreports',        badge: issues.length },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
+    { icon:'ti-chart-bar',        label:'Analytics',    path:'/studentanalytics' },
     { icon:'ti-help',             label:'Help',         path:'/help' },
-  ];
-
+];
   const sidebarWidth = collapsed ? '52px' : '200px';
 
   return (
