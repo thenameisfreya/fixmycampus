@@ -57,11 +57,12 @@ const getWorstPriority = (issues) => {
 };
 
 const NAV = [
-  { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
-  { icon:'ti-list-check',       label:'All Issues',   path:'/allissues', active:true },
-  { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
-  { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
-  { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
+    { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
+    { icon:'ti-map-pin',          label:'Campus Map',   path:'/campusmap' },
+    { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
+    { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
+    { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
 ];
 
 const AllIssues = () => {
@@ -78,6 +79,28 @@ const AllIssues = () => {
   useEffect(() => {
     getIssues().then(res => setIssues(res.data)).catch(console.log);
   }, []);
+
+  const exportCSV = () => {
+    const headers = ['Title','Category','Building','Room','Priority','Status','Reported By','Date'];
+    const rows = issues.map(i => [
+      '"' + (i.title || '').replace(/"/g, '""') + '"',
+      '"' + (i.category || '') + '"',
+      '"' + (i.location?.building || '') + '"',
+      '"' + (i.location?.room || '') + '"',
+      '"' + (i.priority || '') + '"',
+      '"' + (i.status || '') + '"',
+      '"' + (i.user?.name || 'Student') + '"',
+      '"' + new Date(i.createdAt).toLocaleDateString('en-GB') + '"',
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type:'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'reficere-issues-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleStatusUpdate = async () => {
     if (!newStatus || !selected || newStatus === selected.status) return;
@@ -168,6 +191,15 @@ const AllIssues = () => {
             <span style={{ padding:'5px 12px', borderRadius:'20px', background:'rgba(0,232,122,0.12)', color:'#00e87a', border:'1px solid rgba(0,232,122,0.25)', fontSize:'11px', fontWeight:'600' }}>
               {totalCount} total
             </span>
+            <button
+              onClick={exportCSV}
+              style={{ display:'flex', alignItems:'center', gap:'6px', padding:'7px 14px', background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'8px', color:'#fff', fontSize:'11px', fontWeight:'600', cursor:'pointer', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.18)'}
+              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
+            >
+              <i className="ti ti-download" style={{ fontSize:'14px' }} aria-hidden="true" />
+              Export CSV
+            </button>
           </div>
         </div>
 

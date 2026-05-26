@@ -6,14 +6,14 @@ const FacilitiesHelp = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const NAV = [
+const NAV = [
     { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
     { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
+    { icon:'ti-map-pin',          label:'Campus Map',   path:'/campusmap' },
     { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
-    { icon:'ti-help',             label:'Help',         path:'/facilitieshelp', active:true },
-  ];
-
+    { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
+];
   return (
     <div style={{ minHeight:'100vh', display:'flex', fontFamily:"'Segoe UI',sans-serif", background:'#f5f6f8' }}>
 

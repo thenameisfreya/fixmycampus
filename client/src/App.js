@@ -14,6 +14,7 @@ import AllIssues from './pages/AllIssues';
 import FacilitiesHelp from './pages/FacilitiesHelp';
 import MyReports from './pages/MyReports';
 import StudentAnalytics from './pages/StudentAnalytics';
+import CampusMap from './pages/CampusMap';
 
 const PrivateRoute = ({ children, roles }) => {
   const { user, loading } = React.useContext(AuthContext);
@@ -109,6 +110,12 @@ function App() {
           <Route path="/studentanalytics" element={
             <PrivateRoute>
               <StudentAnalytics />
+            </PrivateRoute>
+          } />
+
+          <Route path="/campusmap" element={
+            <PrivateRoute roles={['facilities','staff','admin']}>
+              <CampusMap />
             </PrivateRoute>
           } />
 

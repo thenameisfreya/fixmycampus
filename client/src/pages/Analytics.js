@@ -11,8 +11,9 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true);
 
   const NAV = [
-    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities', active:true },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
     { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
+    { icon:'ti-map-pin',          label:'Campus Map',   path:'/campusmap' },
     { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
     { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },

@@ -19,19 +19,21 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const NAV = user?.role === 'student' ? [
+const NAV = user?.role === 'student' ? [
     { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/dashboard' },
     { icon:'ti-plus',             label:'Report Issue',  path:'/submit' },
-    { icon:'ti-list-check',       label:'My Reports',   path:'/dashboard' },
+    { icon:'ti-list-check',       label:'My Reports',   path:'/myreports' },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications', active:true },
+    { icon:'ti-chart-bar',        label:'Analytics',    path:'/studentanalytics' },
     { icon:'ti-help',             label:'Help',         path:'/help' },
-  ] : [
+] : [
     { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
-    { icon:'ti-list-check',       label:'All Issues',   path:'/facilities' },
+    { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
+    { icon:'ti-map-pin',          label:'Campus Map',   path:'/campusmap' },
     { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications', active:true },
-    { icon:'ti-help',             label:'Help',         path:'/help' },
-  ];
+    { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
+];
 
   useEffect(() => {
     getNotifications()

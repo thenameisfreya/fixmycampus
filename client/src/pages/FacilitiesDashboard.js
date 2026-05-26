@@ -39,13 +39,13 @@ const SORT_OPTIONS = ['Date — Newest','Date — Oldest','Urgency','Building'];
 const FILTERS = ['All','New','In Progress','Awaiting Parts','Resolved'];
 
 const NAV = [
-  { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities', active:true },
-  { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
-  { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
-  { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
-  { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
+    { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
+    { icon:'ti-map-pin',          label:'Campus Map',   path:'/campusmap' },
+    { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
+    { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
+     { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
 ];
-
 const timeAgo = (dateStr) => {
   if (!dateStr) return '';
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
