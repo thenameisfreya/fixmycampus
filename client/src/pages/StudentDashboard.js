@@ -15,14 +15,12 @@ const StudentDashboard = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animationId;
-
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resize();
     window.addEventListener('resize', resize);
-
     const colors = [
       { r:99,  g:102, b:241 },
       { r:0,   g:184, b:94  },
@@ -31,7 +29,6 @@ const StudentDashboard = () => {
       { r:139, g:92,  b:246 },
       { r:16,  g:185, b:129 }
     ];
-
     const particles = [];
     for (let i = 0; i < 120; i++) {
       const col = colors[Math.floor(Math.random() * colors.length)];
@@ -45,7 +42,6 @@ const StudentDashboard = () => {
         pulse: Math.random() * Math.PI * 2
       });
     }
-
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
@@ -88,7 +84,6 @@ const StudentDashboard = () => {
       }
       animationId = requestAnimationFrame(draw);
     };
-
     draw();
     return () => {
       cancelAnimationFrame(animationId);
@@ -160,12 +155,12 @@ const StudentDashboard = () => {
   const filters = ['All', 'New', 'In Progress', 'Awaiting Parts', 'Resolved'];
 
   const NAV = [
-    { icon:'ti-layout-dashboard', label:'Dashboard',    path:'/dashboard', active:true },
-    { icon:'ti-plus',             label:'Report Issue', path:'/submit' },
-    { icon:'ti-list-check',       label:'My Reports',  path:'/dashboard', badge: issues.length },
-    { icon:'ti-bell',             label:'Notifications',path:'/dashboard' },
-    { icon:'ti-chart-bar',        label:'Analytics',   path:'/analytics' },
-    { icon:'ti-book',             label:'Help',        path:'/dashboard' },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/dashboard',     active:true },
+    { icon:'ti-plus',             label:'Report Issue',  path:'/submit' },
+    { icon:'ti-list-check',       label:'My Reports',   path:'/dashboard',     badge: issues.length },
+    { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
+    { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
+    { icon:'ti-help',             label:'Help',         path:'/help' },
   ];
 
   return (
@@ -247,7 +242,10 @@ const StudentDashboard = () => {
               <i className="ti ti-plus" style={{ fontSize:'14px' }} aria-hidden="true" />
               Report Issue
             </button>
-            <div style={{ width:'36px', height:'36px', borderRadius:'10px', background:'rgba(255,255,255,0.8)', border:'1px solid rgba(0,0,0,0.08)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', cursor:'pointer', backdropFilter:'blur(8px)' }}>
+            <div
+              onClick={() => navigate('/notifications')}
+              style={{ width:'36px', height:'36px', borderRadius:'10px', background:'rgba(255,255,255,0.8)', border:'1px solid rgba(0,0,0,0.08)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', cursor:'pointer', backdropFilter:'blur(8px)' }}
+            >
               <i className="ti ti-bell" style={{ fontSize:'16px', color:'#6b7280' }} aria-hidden="true" />
               {newCount > 0 && (
                 <span style={{ position:'absolute', top:'-2px', right:'-2px', width:'9px', height:'9px', background:'#00e87a', borderRadius:'50%', border:'2px solid #eef0f5' }} />
@@ -259,10 +257,10 @@ const StudentDashboard = () => {
         <div style={{ padding:'24px 28px' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'16px', marginBottom:'24px' }}>
             {[
-              { label:'Total Reports', value:issues.length, icon:'ti-files', bg:'linear-gradient(135deg,#e0e7ff,#c7d2fe)', iconColor:'#4f46e5', labelColor:'#4f46e5', badge:'ALL' },
-              { label:'New', value:newCount, icon:'ti-circle-plus', bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)', iconColor:'#2563eb', labelColor:'#2563eb', badge:'NEW' },
-              { label:'In Progress', value:inProgressCount, icon:'ti-loader', bg:'linear-gradient(135deg,#fef3c7,#fde68a)', iconColor:'#d97706', labelColor:'#d97706', badge:'WIP' },
-              { label:'Resolved', value:resolvedCount, icon:'ti-circle-check', bg:'linear-gradient(135deg,#d1fae5,#a7f3d0)', iconColor:'#059669', labelColor:'#059669', badge:'DONE' }
+              { label:'Total Reports', value:issues.length,      icon:'ti-files',        bg:'linear-gradient(135deg,#e0e7ff,#c7d2fe)', iconColor:'#4f46e5', labelColor:'#4f46e5', badge:'ALL' },
+              { label:'New',           value:newCount,           icon:'ti-circle-plus',  bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)', iconColor:'#2563eb', labelColor:'#2563eb', badge:'NEW' },
+              { label:'In Progress',   value:inProgressCount,    icon:'ti-loader',       bg:'linear-gradient(135deg,#fef3c7,#fde68a)', iconColor:'#d97706', labelColor:'#d97706', badge:'WIP' },
+              { label:'Resolved',      value:resolvedCount,      icon:'ti-circle-check', bg:'linear-gradient(135deg,#d1fae5,#a7f3d0)', iconColor:'#059669', labelColor:'#059669', badge:'DONE' }
             ].map((card, index) => (
               <div key={index}
                 style={{ background:card.bg, borderRadius:'18px', padding:'18px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', transition:'transform 0.2s ease', backdropFilter:'blur(8px)' }}
@@ -282,7 +280,6 @@ const StudentDashboard = () => {
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 200px', gap:'16px' }}>
-
             <div style={{ background:'rgba(255,255,255,0.75)', backdropFilter:'blur(16px)', borderRadius:'18px', overflow:'hidden', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
               <div style={{ padding:'16px 20px', borderBottom:'1px solid rgba(0,0,0,0.05)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <h2 style={{ color:'#1a1a2e', fontSize:'14px', fontWeight:'700', margin:0 }}>My Reports</h2>
