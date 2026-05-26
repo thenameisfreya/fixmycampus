@@ -39,11 +39,11 @@ const SORT_OPTIONS = ['Date — Newest','Date — Oldest','Urgency','Building'];
 const FILTERS = ['All','New','In Progress','Awaiting Parts','Resolved'];
 
 const NAV = [
-  { icon:'ti-layout-dashboard', path:'/facilities', active:true },
-  { icon:'ti-list-check',       path:'/facilities' },
-  { icon:'ti-chart-bar',        path:'/analytics' },
-  { icon:'ti-bell',             path:'/facilities' },
-  { icon:'ti-settings',         path:'/facilities' },
+  { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities', active:true },
+  { icon:'ti-list-check',       label:'All Issues',   path:'/facilities' },
+  { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
+  { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
+  { icon:'ti-help',             label:'Help',         path:'/help' },
 ];
 
 const timeAgo = (dateStr) => {
@@ -75,6 +75,7 @@ const FacilitiesDashboard = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let id;
     const resize = () => {
@@ -171,7 +172,7 @@ const FacilitiesDashboard = () => {
   };
 
   const STAT_CARDS = [
-    { label:'Total',   value:counts.total,   bg:'#f0fdf4', border:'#bbf7d0', color:'#166634' },
+    { label:'Total',   value:counts.total,   bg:'#f0fdf4', border:'#bbf7d0', color:'#166534' },
     { label:'New',     value:counts.new,     bg:'#f0fdf4', border:'#bbf7d0', color:'#166534' },
     { label:'Active',  value:counts.active,  bg:'#fefce8', border:'#fde68a', color:'#854d0e' },
     { label:'Waiting', value:counts.waiting, bg:'#fff7ed', border:'#fed7aa', color:'#9a3412' },
@@ -185,312 +186,316 @@ const FacilitiesDashboard = () => {
     <div style={{ height:'100vh', display:'flex', fontFamily:"'Segoe UI',sans-serif", background:'#f9fafb', position:'relative', overflow:'hidden' }}>
       <canvas ref={canvasRef} style={{ position:'fixed', inset:0, zIndex:1, pointerEvents:'none' }} />
 
-      <div style={{ width:'52px', background:'#1a1a2e', display:'flex', flexDirection:'column', alignItems:'center', padding:'16px 0', gap:'20px', flexShrink:0, zIndex:10, position:'relative' }}>
-        <div style={{ width:'30px', height:'30px', background:'linear-gradient(135deg,#00e87a,#00b85e)', borderRadius:'7px', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 10px rgba(0,232,122,0.3)' }}>
-          <span style={{ color:'#1a1a2e', fontWeight:'900', fontSize:'13px' }}>R</span>
+      <div style={{ width:'200px', background:'#1a1a2e', display:'flex', flexDirection:'column', padding:'20px 0', flexShrink:0, zIndex:10, position:'relative' }}>
+        <div style={{ padding:'0 16px 18px', borderBottom:'1px solid rgba(255,255,255,0.08)', marginBottom:'14px' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px' }}>
+            <div style={{ width:'30px', height:'30px', background:'linear-gradient(135deg,#00e87a,#00b85e)', borderRadius:'7px', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 10px rgba(0,232,122,0.3)' }}>
+              <span style={{ color:'#1a1a2e', fontWeight:'900', fontSize:'13px' }}>R</span>
+            </div>
+            <span style={{ color:'#fff', fontWeight:'700', fontSize:'13px', letterSpacing:'2px' }}>REFICERE</span>
+          </div>
+          <div style={{ padding:'4px 10px', background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.25)', borderRadius:'6px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+            <div style={{ width:'6px', height:'6px', borderRadius:'50%', background:'#fbbf24' }} />
+            <span style={{ color:'#fbbf24', fontSize:'10px', fontWeight:'600', letterSpacing:'1px' }}>FACILITIES TEAM</span>
+          </div>
         </div>
 
         {NAV.map((item, i) => (
           <div key={i}
             onClick={() => navigate(item.path)}
-            style={{ width:'36px', height:'36px', borderRadius:'9px', display:'flex', alignItems:'center', justifyContent:'center', background:item.active?'rgba(0,232,122,0.15)':'transparent', cursor:'pointer', transition:'all 0.2s' }}
-            onMouseEnter={e => { if(!item.active) e.currentTarget.style.background='rgba(255,255,255,0.08)'; }}
+            style={{ padding:'9px 16px', margin:'0 8px 3px', borderRadius:'10px', display:'flex', alignItems:'center', gap:'10px', cursor:'pointer', background:item.active?'rgba(0,232,122,0.12)':'transparent', border:item.active?'1px solid rgba(0,232,122,0.25)':'1px solid transparent', transition:'all 0.2s ease' }}
+            onMouseEnter={e => { if(!item.active) e.currentTarget.style.background='rgba(255,255,255,0.05)'; }}
             onMouseLeave={e => { if(!item.active) e.currentTarget.style.background='transparent'; }}
           >
-            <i className={'ti '+item.icon} style={{ fontSize:'18px', color:item.active?'#00e87a':'rgba(255,255,255,0.3)' }} aria-hidden="true" />
+            <i className={'ti '+item.icon} style={{ fontSize:'16px', color:item.active?'#00e87a':'rgba(255,255,255,0.35)' }} aria-hidden="true" />
+            <span style={{ fontSize:'12px', color:item.active?'#00e87a':'rgba(255,255,255,0.35)', fontWeight:item.active?'600':'400' }}>{item.label}</span>
           </div>
         ))}
 
-        <div onClick={() => { logout(); navigate('/login'); }}
-          style={{ marginTop:'auto', width:'28px', height:'28px', borderRadius:'50%', background:'rgba(251,191,36,0.2)', border:'1px solid rgba(251,191,36,0.4)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fbbf24', fontSize:'11px', fontWeight:'700', cursor:'pointer' }}
-        >
-          {user&&user.name.charAt(0).toUpperCase()}
+        <div style={{ marginTop:'auto', padding:'14px 16px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+            <div style={{ width:'30px', height:'30px', borderRadius:'50%', background:'rgba(251,191,36,0.15)', border:'1px solid rgba(251,191,36,0.3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:'700', color:'#fbbf24', flexShrink:0 }}>
+              {user && user.name.charAt(0).toUpperCase()}
+            </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <p style={{ color:'#fff', fontSize:'11px', fontWeight:'500', margin:0 }}>{user && user.name.split(' ')[0]}</p>
+              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'10px', margin:0, textTransform:'capitalize' }}>{user && user.role}</p>
+            </div>
+            <i className="ti ti-logout"
+              onClick={() => { logout(); navigate('/login'); }}
+              style={{ fontSize:'15px', color:'rgba(255,255,255,0.25)', cursor:'pointer', transition:'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color='#fff'}
+              onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.25)'}
+              aria-hidden="true"
+            />
+          </div>
         </div>
       </div>
 
-      <div style={{ width:'340px', display:'flex', flexDirection:'column', background:'#fff', borderRight:'1px solid #e5e7eb', position:'relative', zIndex:5, overflow:'hidden' }}>
+      <div style={{ flex:1, display:'flex', overflow:'hidden', position:'relative', zIndex:5 }}>
 
-        <div style={{ padding:'16px 16px 12px', borderBottom:'1px solid #f0f0f0', flexShrink:0 }}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'12px' }}>
-            <div>
-              <p style={{ color:'#6b7280', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 3px', fontWeight:'500' }}>Facilities Portal</p>
-              <h1 style={{ color:'#111827', fontSize:'17px', fontWeight:'700', margin:0, letterSpacing:'-0.3px' }}>Open Issues</h1>
-            </div>
-            <div style={{ padding:'4px 10px', background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.25)', borderRadius:'6px' }}>
-              <span style={{ color:'#92400e', fontSize:'10px', fontWeight:'600' }}>FACILITIES</span>
-            </div>
-          </div>
+        <div style={{ flex:1, display:'flex', flexDirection:'column', background:'#fff', borderRight:'1px solid #e5e7eb', overflow:'hidden' }}>
 
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:'6px', marginBottom:'12px' }}>
-            {STAT_CARDS.map((card,i) => (
-              <div key={i}
-                style={{ background:card.bg, border:'1px solid '+card.border, borderRadius:'8px', padding:'7px 4px', textAlign:'center', cursor:'pointer', transition:'transform 0.15s' }}
-                onMouseEnter={e => e.currentTarget.style.transform='translateY(-1px)'}
-                onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
-                onClick={() => setFilter(
-                  card.label==='Total'?'All':
-                  card.label==='Active'?'In Progress':
-                  card.label==='Waiting'?'Awaiting Parts':
-                  card.label==='Urgent'?filter:card.label
-                )}
-              >
-                <p style={{ color:card.color, fontSize:'18px', fontWeight:'800', margin:0, lineHeight:1 }}>{card.value}</p>
-                <p style={{ color:card.color, fontSize:'8px', fontWeight:'600', textTransform:'uppercase', letterSpacing:'0.5px', margin:'3px 0 0', opacity:0.8 }}>{card.label}</p>
+          <div style={{ padding:'16px 16px 12px', borderBottom:'1px solid #f0f0f0', flexShrink:0 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'12px' }}>
+              <div>
+                <p style={{ color:'#6b7280', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 3px', fontWeight:'500' }}>Facilities Portal</p>
+                <h1 style={{ color:'#111827', fontSize:'17px', fontWeight:'700', margin:0, letterSpacing:'-0.3px' }}>Open Issues</h1>
               </div>
-            ))}
-          </div>
-
-          <div style={{ position:'relative', marginBottom:'10px' }}>
-            <i className="ti ti-search" style={{ position:'absolute', left:'9px', top:'50%', transform:'translateY(-50%)', fontSize:'13px', color:'#9ca3af' }} aria-hidden="true" />
-            <input type="text" placeholder="Search title, building, category..."
-              value={search} onChange={e => setSearch(e.target.value)}
-              style={{ width:'100%', padding:'8px 10px 8px 28px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111827', outline:'none', background:'#f9fafb', fontFamily:"'Segoe UI',sans-serif", boxSizing:'border-box' }}
-            />
-          </div>
-
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:'6px' }}>
-            <div style={{ display:'flex', gap:'4px', flexWrap:'wrap', flex:1 }}>
-              {FILTERS.map(f => {
-                const label = f==='In Progress'?'Active':f==='Awaiting Parts'?'Waiting':f;
-                const count = f==='New'?counts.new:f==='In Progress'?counts.active:f==='Awaiting Parts'?counts.waiting:f==='Resolved'?issues.filter(i=>i.status==='Resolved').length:null;
-                return (
-                  <button key={f} onClick={() => setFilter(f)}
-                    style={{ padding:'4px 8px', borderRadius:'20px', border:filter===f?'none':'1px solid #e5e7eb', background:filter===f?'#111827':'transparent', color:filter===f?'#fff':'#6b7280', fontSize:'10px', fontWeight:filter===f?'600':'400', cursor:'pointer', transition:'all 0.15s', display:'flex', alignItems:'center', gap:'3px', fontFamily:"'Segoe UI',sans-serif" }}
-                  >
-                    {label}
-                    {count!==null&&<span style={{ background:filter===f?'rgba(255,255,255,0.2)':'#f3f4f6', borderRadius:'10px', padding:'0 4px', fontSize:'9px', color:filter===f?'#fff':'#9ca3af' }}>{count}</span>}
-                  </button>
-                );
-              })}
+              <div style={{ padding:'4px 10px', background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.25)', borderRadius:'6px' }}>
+                <span style={{ color:'#92400e', fontSize:'10px', fontWeight:'600' }}>FACILITIES</span>
+              </div>
             </div>
-            <div style={{ position:'relative', flexShrink:0 }}>
-              <button onClick={() => setShowSort(!showSort)}
-                style={{ display:'flex', alignItems:'center', gap:'4px', padding:'5px 8px', border:'1px solid #e5e7eb', borderRadius:'7px', background:'#f9fafb', color:'#374151', fontSize:'10px', cursor:'pointer', fontFamily:"'Segoe UI',sans-serif" }}
-              >
-                <i className="ti ti-arrows-sort" style={{ fontSize:'12px', color:'#6b7280' }} aria-hidden="true" />
-                <i className="ti ti-chevron-down" style={{ fontSize:'10px', color:'#9ca3af' }} aria-hidden="true" />
-              </button>
-              {showSort && (
-                <div style={{ position:'absolute', right:0, top:'calc(100% + 4px)', background:'#fff', border:'1px solid #e5e7eb', borderRadius:'10px', boxShadow:'0 8px 24px rgba(0,0,0,0.1)', zIndex:20, minWidth:'150px', overflow:'hidden' }}>
-                  {SORT_OPTIONS.map(s => (
-                    <button key={s} onClick={() => { setSort(s); setShowSort(false); }}
-                      style={{ display:'block', width:'100%', padding:'9px 14px', background:sort===s?'#f0fdf4':'transparent', border:'none', textAlign:'left', color:sort===s?'#166534':'#374151', fontSize:'12px', cursor:'pointer', fontFamily:"'Segoe UI',sans-serif", fontWeight:sort===s?'600':'400' }}
+
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:'6px', marginBottom:'12px' }}>
+              {STAT_CARDS.map((card,i) => (
+                <div key={i}
+                  style={{ background:card.bg, border:'1px solid '+card.border, borderRadius:'8px', padding:'7px 4px', textAlign:'center', cursor:'pointer', transition:'transform 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.transform='translateY(-1px)'}
+                  onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
+                  onClick={() => setFilter(
+                    card.label==='Total'?'All':
+                    card.label==='Active'?'In Progress':
+                    card.label==='Waiting'?'Awaiting Parts':
+                    card.label==='Urgent'?filter:card.label
+                  )}
+                >
+                  <p style={{ color:card.color, fontSize:'18px', fontWeight:'800', margin:0, lineHeight:1 }}>{card.value}</p>
+                  <p style={{ color:card.color, fontSize:'8px', fontWeight:'600', textTransform:'uppercase', letterSpacing:'0.5px', margin:'3px 0 0', opacity:0.8 }}>{card.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ position:'relative', marginBottom:'10px' }}>
+              <i className="ti ti-search" style={{ position:'absolute', left:'9px', top:'50%', transform:'translateY(-50%)', fontSize:'13px', color:'#9ca3af' }} aria-hidden="true" />
+              <input type="text" placeholder="Search title, building, category..."
+                value={search} onChange={e => setSearch(e.target.value)}
+                style={{ width:'100%', padding:'8px 10px 8px 28px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'12px', color:'#111827', outline:'none', background:'#f9fafb', fontFamily:"'Segoe UI',sans-serif", boxSizing:'border-box' }}
+              />
+            </div>
+
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:'6px' }}>
+              <div style={{ display:'flex', gap:'4px', flexWrap:'wrap', flex:1 }}>
+                {FILTERS.map(f => {
+                  const label = f==='In Progress'?'Active':f==='Awaiting Parts'?'Waiting':f;
+                  const count = f==='New'?counts.new:f==='In Progress'?counts.active:f==='Awaiting Parts'?counts.waiting:f==='Resolved'?issues.filter(i=>i.status==='Resolved').length:null;
+                  return (
+                    <button key={f} onClick={() => setFilter(f)}
+                      style={{ padding:'4px 8px', borderRadius:'20px', border:filter===f?'none':'1px solid #e5e7eb', background:filter===f?'#111827':'transparent', color:filter===f?'#fff':'#6b7280', fontSize:'10px', fontWeight:filter===f?'600':'400', cursor:'pointer', transition:'all 0.15s', display:'flex', alignItems:'center', gap:'3px', fontFamily:"'Segoe UI',sans-serif" }}
+                    >
+                      {label}
+                      {count!==null&&<span style={{ background:filter===f?'rgba(255,255,255,0.2)':'#f3f4f6', borderRadius:'10px', padding:'0 4px', fontSize:'9px', color:filter===f?'#fff':'#9ca3af' }}>{count}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              <div style={{ position:'relative', flexShrink:0 }}>
+                <button onClick={() => setShowSort(!showSort)}
+                  style={{ display:'flex', alignItems:'center', gap:'4px', padding:'5px 8px', border:'1px solid #e5e7eb', borderRadius:'7px', background:'#f9fafb', color:'#374151', fontSize:'10px', cursor:'pointer', fontFamily:"'Segoe UI',sans-serif" }}
+                >
+                  <i className="ti ti-arrows-sort" style={{ fontSize:'12px', color:'#6b7280' }} aria-hidden="true" />
+                  <i className="ti ti-chevron-down" style={{ fontSize:'10px', color:'#9ca3af' }} aria-hidden="true" />
+                </button>
+                {showSort && (
+                  <div style={{ position:'absolute', right:0, top:'calc(100% + 4px)', background:'#fff', border:'1px solid #e5e7eb', borderRadius:'10px', boxShadow:'0 8px 24px rgba(0,0,0,0.1)', zIndex:20, minWidth:'150px', overflow:'hidden' }}>
+                    {SORT_OPTIONS.map(s => (
+                      <button key={s} onClick={() => { setSort(s); setShowSort(false); }}
+                        style={{ display:'block', width:'100%', padding:'9px 14px', background:sort===s?'#f0fdf4':'transparent', border:'none', textAlign:'left', color:sort===s?'#166534':'#374151', fontSize:'12px', cursor:'pointer', fontFamily:"'Segoe UI',sans-serif", fontWeight:sort===s?'600':'400' }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {sortedFiltered.length===0 ? (
+              <div style={{ padding:'40px 20px', textAlign:'center' }}>
+                <i className="ti ti-clipboard" style={{ fontSize:'28px', color:'#d1d5db', display:'block', marginBottom:'10px' }} aria-hidden="true" />
+                <p style={{ color:'#9ca3af', fontSize:'13px', margin:0 }}>No issues found</p>
+              </div>
+            ) : (
+              sortedFiltered.map(issue => {
+                const isSelected = selected&&selected._id===issue._id;
+                const sb = STATUS_BADGE[issue.status]||STATUS_BADGE['Closed'];
+                const strip = PRIORITY_STRIP[issue.priority]||'#3b82f6';
+                return (
+                  <div key={issue._id}
+                    onClick={() => { setSelected(issue); setNewStatus(issue.status); setAssignedTo(''); setShowPhoto(false); }}
+                    style={{ padding:'13px 14px 13px 12px', borderBottom:'1px solid #f0f0f0', cursor:'pointer', transition:'background 0.15s', background:isSelected?'#f0fdf4':'transparent', borderLeft:`4px solid ${isSelected?'#16a34a':strip}` }}
+                    onMouseEnter={e => { if(!isSelected) e.currentTarget.style.background='#f9fafb'; }}
+                    onMouseLeave={e => { if(!isSelected) e.currentTarget.style.background='transparent'; }}
+                  >
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'8px', marginBottom:'5px' }}>
+                      <p style={{ color:'#111827', fontSize:'13px', fontWeight:'600', margin:0, flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{issue.title}</p>
+                      <span style={{ padding:'2px 8px', borderRadius:'20px', background:sb.bg, color:sb.color, fontSize:'10px', fontWeight:'600', flexShrink:0 }}>{sb.label}</span>
+                    </div>
+                    <p style={{ color:'#9ca3af', fontSize:'11px', margin:'0 0 5px' }}>
+                      {issue.location?.building}{issue.location?.room?' · Room '+issue.location.room:''} · {issue.category}
+                    </p>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <p style={{ color:'#9ca3af', fontSize:'11px', margin:0 }}>
+                        {issue.user?.name?'by '+issue.user.name:'Student'} · {timeAgo(issue.createdAt)}
+                      </p>
+                      <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+                        <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:strip, display:'inline-block' }} />
+                        <span style={{ fontSize:'10px', color:strip, fontWeight:'600' }}>{issue.priority||'Medium'}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        <div style={{ flex:1, background:'#1c2e22', display:'flex', flexDirection:'column', overflowY:'auto' }}>
+          {!selected ? (
+            <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px', minHeight:'100%' }}>
+              <i className="ti ti-hand-click" style={{ fontSize:'36px', color:'rgba(255,255,255,0.15)', display:'block', marginBottom:'14px' }} aria-hidden="true" />
+              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'14px', fontWeight:'500', margin:'0 0 6px' }}>No issue selected</p>
+              <p style={{ color:'rgba(255,255,255,0.2)', fontSize:'12px', margin:0 }}>Click any issue on the left to view details</p>
+            </div>
+          ) : (
+            <>
+              <div style={{ borderLeft:`4px solid ${priorityStrip}`, padding:'20px 22px 16px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+                  <div>
+                    <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 5px' }}>Selected Issue</p>
+                    <h2 style={{ color:'#fff', fontSize:'17px', fontWeight:'700', margin:'0 0 4px', letterSpacing:'-0.3px' }}>{selected.title}</h2>
+                    <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'12px', margin:0 }}>
+                      <i className={'ti '+getCategoryIcon(selected.category)} style={{ fontSize:'12px', marginRight:'4px' }} aria-hidden="true" />
+                      {selected.category} · {selected.location?.building}{selected.location?.room?' · Room '+selected.location.room:''}
+                    </p>
+                  </div>
+                  <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'6px' }}>
+                    <span style={{ padding:'4px 12px', borderRadius:'20px', background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'#fff', fontSize:'11px', fontWeight:'600' }}>
+                      {STATUS_BADGE[selected.status]?.label||selected.status}
+                    </span>
+                    <span style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+                      <span style={{ width:'7px', height:'7px', borderRadius:'50%', background:priorityStrip, display:'inline-block' }} />
+                      <span style={{ color:priorityStrip, fontSize:'11px', fontWeight:'600' }}>{selected.priority||'Medium'}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ padding:'18px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
+                  {[
+                    { label:'Building', value:selected.location?.building||'—' },
+                    { label:'Room', value:selected.location?.room||'Not specified' },
+                    { label:'Reported by', value:selected.user?.name||'Student', isUser:true },
+                    { label:'Opened', value:timeAgo(selected.createdAt) },
+                  ].map((item,i) => (
+                    <div key={i} style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'10px', padding:'11px 13px' }}>
+                      <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'9px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 4px' }}>{item.label}</p>
+                      {item.isUser ? (
+                        <div style={{ display:'flex', alignItems:'center', gap:'7px' }}>
+                          <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:'#00e87a', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', fontWeight:'700', color:'#1a1a2e', flexShrink:0 }}>
+                            {(selected.user?.name||'S').charAt(0).toUpperCase()}
+                          </div>
+                          <p style={{ color:'#fff', fontSize:'12px', fontWeight:'500', margin:0 }}>{item.value}</p>
+                        </div>
+                      ) : (
+                        <p style={{ color:'#fff', fontSize:'12px', fontWeight:'500', margin:0 }}>{item.value}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {selected.description && (
+                <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+                  <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'10px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 8px' }}>Description</p>
+                  <p style={{ color:'rgba(255,255,255,0.7)', fontSize:'13px', lineHeight:'1.7', margin:0, background:'rgba(255,255,255,0.04)', padding:'12px', borderRadius:'8px', border:'1px solid rgba(255,255,255,0.07)' }}>
+                    {selected.description}
+                  </p>
+                </div>
+              )}
+
+              <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+                <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Update Status</p>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'7px' }}>
+                  {STATUS_OPTIONS.map(s => (
+                    <button key={s} onClick={() => setNewStatus(s)}
+                      style={{ padding:'9px 12px', borderRadius:'9px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', border:newStatus===s?'1px solid rgba(255,255,255,0.3)':'1px solid rgba(255,255,255,0.08)', background:newStatus===s?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.04)', color:newStatus===s?'#fff':'rgba(255,255,255,0.5)', fontSize:'12px', fontWeight:newStatus===s?'600':'400', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.15s' }}
                     >
                       {s}
+                      {newStatus===s&&<i className="ti ti-check" style={{ fontSize:'13px', color:'#00e87a' }} aria-hidden="true" />}
                     </button>
                   ))}
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+              </div>
 
-        <div style={{ flex:1, overflowY:'auto' }}>
-          {sortedFiltered.length===0 ? (
-            <div style={{ padding:'40px 20px', textAlign:'center' }}>
-              <i className="ti ti-clipboard" style={{ fontSize:'28px', color:'#d1d5db', display:'block', marginBottom:'10px' }} aria-hidden="true" />
-              <p style={{ color:'#9ca3af', fontSize:'13px', margin:0 }}>No issues found</p>
-            </div>
-          ) : (
-            sortedFiltered.map(issue => {
-              const isSelected = selected&&selected._id===issue._id;
-              const sb = STATUS_BADGE[issue.status]||STATUS_BADGE['Closed'];
-              const strip = PRIORITY_STRIP[issue.priority]||'#3b82f6';
-              return (
-                <div key={issue._id}
-                  onClick={() => { setSelected(issue); setNewStatus(issue.status); setAssignedTo(''); setShowPhoto(false); }}
-                  style={{ padding:'13px 14px 13px 12px', borderBottom:'1px solid #f0f0f0', cursor:'pointer', transition:'background 0.15s', background:isSelected?'#f0fdf4':'transparent', borderLeft:`4px solid ${isSelected?'#16a34a':strip}` }}
-                  onMouseEnter={e => { if(!isSelected) e.currentTarget.style.background='#f9fafb'; }}
-                  onMouseLeave={e => { if(!isSelected) e.currentTarget.style.background='transparent'; }}
-                >
-                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'8px', marginBottom:'5px' }}>
-                    <p style={{ color:'#111827', fontSize:'13px', fontWeight:'600', margin:0, flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{issue.title}</p>
-                    <span style={{ padding:'2px 8px', borderRadius:'20px', background:sb.bg, color:sb.color, fontSize:'10px', fontWeight:'600', flexShrink:0 }}>{sb.label}</span>
-                  </div>
-                  <p style={{ color:'#9ca3af', fontSize:'11px', margin:'0 0 5px' }}>
-                    {issue.location?.building}{issue.location?.room?' · Room '+issue.location.room:''} · {issue.category}
-                  </p>
-                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                    <p style={{ color:'#9ca3af', fontSize:'11px', margin:0 }}>
-                      {issue.user?.name?'by '+issue.user.name:'Student'} · {timeAgo(issue.createdAt)}
-                    </p>
-                    <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
-                      <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:strip, display:'inline-block' }} />
-                      <span style={{ fontSize:'10px', color:strip, fontWeight:'600' }}>{issue.priority||'Medium'}</span>
+              <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+                <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Assign to</p>
+                <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
+                  {TEAM_MEMBERS.map(member => (
+                    <div key={member.name}
+                      onClick={() => setAssignedTo(assignedTo===member.name?'':member.name)}
+                      style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'9px', cursor:'pointer', border:assignedTo===member.name?'1px solid rgba(0,232,122,0.4)':'1px solid rgba(255,255,255,0.08)', background:assignedTo===member.name?'rgba(0,232,122,0.1)':'rgba(255,255,255,0.04)', transition:'all 0.15s' }}
+                    >
+                      <div style={{ width:'26px', height:'26px', borderRadius:'50%', background:member.color, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', fontWeight:'700', color:member.textColor, flexShrink:0 }}>
+                        {member.initials}
+                      </div>
+                      <span style={{ color:assignedTo===member.name?'#fff':'rgba(255,255,255,0.55)', fontSize:'12px', fontWeight:assignedTo===member.name?'600':'400', flex:1 }}>{member.name}</span>
+                      {assignedTo===member.name&&<i className="ti ti-check" style={{ fontSize:'13px', color:'#00e87a' }} aria-hidden="true" />}
                     </div>
-                  </div>
+                  ))}
                 </div>
-              );
-            })
+              </div>
+
+              <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+                <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Internal Notes</p>
+                {issueNotes.length===0&&(
+                  <p style={{ color:'rgba(255,255,255,0.2)', fontSize:'12px', margin:'0 0 10px' }}>No notes yet</p>
+                )}
+                {issueNotes.map((n,i) => (
+                  <div key={i} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'8px', padding:'10px 12px', marginBottom:'8px' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:'7px', marginBottom:'5px' }}>
+                      <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:'#fbbf24', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', fontWeight:'700', color:'#1a1a2e' }}>
+                        {n.author.charAt(0)}
+                      </div>
+                      <span style={{ color:'rgba(255,255,255,0.4)', fontSize:'11px' }}>{n.author} · {timeAgo(n.time)}</span>
+                    </div>
+                    <p style={{ color:'rgba(255,255,255,0.7)', fontSize:'12px', margin:0, lineHeight:'1.5' }}>{n.text}</p>
+                  </div>
+                ))}
+                <textarea placeholder="Add an internal note — only visible to facilities staff..."
+                  value={note} onChange={e => setNote(e.target.value)}
+                  style={{ width:'100%', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'8px', padding:'10px 12px', color:'rgba(255,255,255,0.7)', fontSize:'12px', resize:'none', height:'70px', outline:'none', fontFamily:"'Segoe UI',sans-serif", boxSizing:'border-box', lineHeight:'1.5' }}
+                />
+                <button onClick={addNote} disabled={!note.trim()}
+                  style={{ marginTop:'7px', padding:'8px 16px', background:note.trim()?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:'8px', color:note.trim()?'rgba(255,255,255,0.8)':'rgba(255,255,255,0.25)', fontSize:'11px', cursor:note.trim()?'pointer':'not-allowed', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.15s' }}
+                >
+                  Add note
+                </button>
+              </div>
+
+              <div style={{ padding:'16px 22px', flexShrink:0 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
+                  <p style={{ color:'rgba(255,255,255,0.35)', fontSize:'11px', margin:0 }}>
+                    {assignedTo
+                      ? <span>Assigned to <span style={{ color:'#00e87a', fontWeight:'600' }}>{assignedTo}</span></span>
+                      : <span>Unassigned</span>
+                    }
+                  </p>
+                  <p style={{ color:'rgba(255,255,255,0.25)', fontSize:'11px', margin:0 }}>Opened {timeAgo(selected.createdAt)}</p>
+                </div>
+                <button onClick={handleStatusUpdate}
+                  disabled={updating||newStatus===selected.status}
+                  style={{ width:'100%', padding:'13px', background:(updating||newStatus===selected.status)?'rgba(0,232,122,0.35)':'#00e87a', border:'none', borderRadius:'10px', color:'#1a1a2e', fontSize:'13px', fontWeight:'700', cursor:(updating||newStatus===selected.status)?'not-allowed':'pointer', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.2s' }}
+                >
+                  {updating?'Saving...':newStatus===selected.status?'No changes':'Save — Update to '+newStatus}
+                </button>
+              </div>
+            </>
           )}
         </div>
-      </div>
-
-      <div style={{ flex:1, background:'#1c2e22', display:'flex', flexDirection:'column', position:'relative', zIndex:5, overflowY:'auto' }}>
-        {!selected ? (
-          <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px', minHeight:'100vh' }}>
-            <i className="ti ti-hand-click" style={{ fontSize:'36px', color:'rgba(255,255,255,0.15)', display:'block', marginBottom:'14px' }} aria-hidden="true" />
-            <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'14px', fontWeight:'500', margin:'0 0 6px' }}>No issue selected</p>
-            <p style={{ color:'rgba(255,255,255,0.2)', fontSize:'12px', margin:0 }}>Click any issue on the left to view details</p>
-          </div>
-        ) : (
-          <>
-            <div style={{ borderLeft:`4px solid ${priorityStrip}`, padding:'20px 22px 16px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
-                <div>
-                  <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 5px' }}>Selected Issue</p>
-                  <h2 style={{ color:'#fff', fontSize:'17px', fontWeight:'700', margin:'0 0 4px', letterSpacing:'-0.3px' }}>{selected.title}</h2>
-                  <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'12px', margin:0 }}>
-                    <i className={'ti '+getCategoryIcon(selected.category)} style={{ fontSize:'12px', marginRight:'4px' }} aria-hidden="true" />
-                    {selected.category} · {selected.location?.building}{selected.location?.room?' · Room '+selected.location.room:''}
-                  </p>
-                </div>
-                <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'6px' }}>
-                  <span style={{ padding:'4px 12px', borderRadius:'20px', background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'#fff', fontSize:'11px', fontWeight:'600' }}>
-                    {STATUS_BADGE[selected.status]?.label||selected.status}
-                  </span>
-                  <span style={{ display:'flex', alignItems:'center', gap:'4px' }}>
-                    <span style={{ width:'7px', height:'7px', borderRadius:'50%', background:priorityStrip, display:'inline-block' }} />
-                    <span style={{ color:priorityStrip, fontSize:'11px', fontWeight:'600' }}>{selected.priority||'Medium'}</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ padding:'18px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
-                {[
-                  { label:'Building', value:selected.location?.building||'—' },
-                  { label:'Room', value:selected.location?.room||'Not specified' },
-                  { label:'Reported by', value:selected.user?.name||'Student', isUser:true },
-                  { label:'Opened', value:timeAgo(selected.createdAt) },
-                ].map((item,i) => (
-                  <div key={i} style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'10px', padding:'11px 13px' }}>
-                    <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'9px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 4px' }}>{item.label}</p>
-                    {item.isUser ? (
-                      <div style={{ display:'flex', alignItems:'center', gap:'7px' }}>
-                        <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:'#00e87a', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', fontWeight:'700', color:'#1a1a2e', flexShrink:0 }}>
-                          {(selected.user?.name||'S').charAt(0).toUpperCase()}
-                        </div>
-                        <p style={{ color:'#fff', fontSize:'12px', fontWeight:'500', margin:0 }}>{item.value}</p>
-                      </div>
-                    ) : (
-                      <p style={{ color:'#fff', fontSize:'12px', fontWeight:'500', margin:0 }}>{item.value}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {selected.description && (
-              <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-                <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'10px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 8px' }}>Description</p>
-                <p style={{ color:'rgba(255,255,255,0.7)', fontSize:'13px', lineHeight:'1.7', margin:0, background:'rgba(255,255,255,0.04)', padding:'12px', borderRadius:'8px', border:'1px solid rgba(255,255,255,0.07)' }}>
-                  {selected.description}
-                </p>
-              </div>
-            )}
-
-            {selected.photo && (
-              <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-                <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'10px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 8px' }}>Attached Photo</p>
-                {showPhoto ? (
-                  <div>
-                    <img src={selected.photo.data} alt="Issue" style={{ width:'100%', borderRadius:'10px', border:'1px solid rgba(255,255,255,0.1)', marginBottom:'8px' }} />
-                    <button onClick={() => setShowPhoto(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:'11px', cursor:'pointer', fontFamily:"'Segoe UI',sans-serif" }}>Hide photo</button>
-                  </div>
-                ) : (
-                  <div onClick={() => setShowPhoto(true)}
-                    style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'10px', padding:'16px', textAlign:'center', cursor:'pointer', transition:'background 0.2s' }}
-                    onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.08)'}
-                    onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.05)'}
-                  >
-                    <i className="ti ti-photo" style={{ fontSize:'24px', color:'rgba(255,255,255,0.3)', display:'block', marginBottom:'6px' }} aria-hidden="true" />
-                    <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'12px', margin:'0 0 2px', fontWeight:'500' }}>{selected.photo.name}</p>
-                    <p style={{ color:'rgba(255,255,255,0.25)', fontSize:'10px', margin:0 }}>Click to view</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-              <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Update Status</p>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'7px' }}>
-                {STATUS_OPTIONS.map(s => (
-                  <button key={s} onClick={() => setNewStatus(s)}
-                    style={{ padding:'9px 12px', borderRadius:'9px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', border:newStatus===s?'1px solid rgba(255,255,255,0.3)':'1px solid rgba(255,255,255,0.08)', background:newStatus===s?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.04)', color:newStatus===s?'#fff':'rgba(255,255,255,0.5)', fontSize:'12px', fontWeight:newStatus===s?'600':'400', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.15s' }}
-                  >
-                    {s}
-                    {newStatus===s&&<i className="ti ti-check" style={{ fontSize:'13px', color:'#00e87a' }} aria-hidden="true" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-              <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Assign to</p>
-              <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
-                {TEAM_MEMBERS.map(member => (
-                  <div key={member.name}
-                    onClick={() => setAssignedTo(assignedTo===member.name?'':member.name)}
-                    style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'9px', cursor:'pointer', border:assignedTo===member.name?'1px solid rgba(0,232,122,0.4)':'1px solid rgba(255,255,255,0.08)', background:assignedTo===member.name?'rgba(0,232,122,0.1)':'rgba(255,255,255,0.04)', transition:'all 0.15s' }}
-                  >
-                    <div style={{ width:'26px', height:'26px', borderRadius:'50%', background:member.color, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', fontWeight:'700', color:member.textColor, flexShrink:0 }}>
-                      {member.initials}
-                    </div>
-                    <span style={{ color:assignedTo===member.name?'#fff':'rgba(255,255,255,0.55)', fontSize:'12px', fontWeight:assignedTo===member.name?'600':'400', flex:1 }}>{member.name}</span>
-                    {assignedTo===member.name&&<i className="ti ti-check" style={{ fontSize:'13px', color:'#00e87a' }} aria-hidden="true" />}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
-              <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Internal Notes</p>
-              {issueNotes.length===0&&(
-                <p style={{ color:'rgba(255,255,255,0.2)', fontSize:'12px', margin:'0 0 10px' }}>No notes yet — add one below</p>
-              )}
-              {issueNotes.map((n,i) => (
-                <div key={i} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'8px', padding:'10px 12px', marginBottom:'8px' }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:'7px', marginBottom:'5px' }}>
-                    <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:'#fbbf24', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', fontWeight:'700', color:'#1a1a2e' }}>
-                      {n.author.charAt(0)}
-                    </div>
-                    <span style={{ color:'rgba(255,255,255,0.4)', fontSize:'11px' }}>{n.author} · {timeAgo(n.time)}</span>
-                  </div>
-                  <p style={{ color:'rgba(255,255,255,0.7)', fontSize:'12px', margin:0, lineHeight:'1.5' }}>{n.text}</p>
-                </div>
-              ))}
-              <textarea placeholder="Add an internal note — only visible to facilities staff..."
-                value={note} onChange={e => setNote(e.target.value)}
-                style={{ width:'100%', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'8px', padding:'10px 12px', color:'rgba(255,255,255,0.7)', fontSize:'12px', resize:'none', height:'70px', outline:'none', fontFamily:"'Segoe UI',sans-serif", boxSizing:'border-box', lineHeight:'1.5' }}
-              />
-              <button onClick={addNote} disabled={!note.trim()}
-                style={{ marginTop:'7px', padding:'8px 16px', background:note.trim()?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:'8px', color:note.trim()?'rgba(255,255,255,0.8)':'rgba(255,255,255,0.25)', fontSize:'11px', cursor:note.trim()?'pointer':'not-allowed', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.15s' }}
-              >
-                Add note
-              </button>
-            </div>
-
-            <div style={{ padding:'16px 22px', flexShrink:0 }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
-                <p style={{ color:'rgba(255,255,255,0.35)', fontSize:'11px', margin:0 }}>
-                  {assignedTo
-                    ? <span>Assigned to <span style={{ color:'#00e87a', fontWeight:'600' }}>{assignedTo}</span></span>
-                    : <span>Unassigned</span>
-                  }
-                </p>
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:'11px', margin:0 }}>Opened {timeAgo(selected.createdAt)}</p>
-              </div>
-              <button onClick={handleStatusUpdate}
-                disabled={updating||newStatus===selected.status}
-                style={{ width:'100%', padding:'13px', background:(updating||newStatus===selected.status)?'rgba(0,232,122,0.35)':'#00e87a', border:'none', borderRadius:'10px', color:'#1a1a2e', fontSize:'13px', fontWeight:'700', cursor:(updating||newStatus===selected.status)?'not-allowed':'pointer', fontFamily:"'Segoe UI',sans-serif", transition:'all 0.2s' }}
-              >
-                {updating?'Saving...':newStatus===selected.status?'No changes':'Save — Update to '+newStatus}
-              </button>
-            </div>
-          </>
-        )}
       </div>
     </div>
   );
