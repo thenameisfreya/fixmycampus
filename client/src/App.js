@@ -10,6 +10,8 @@ import IssueDetail from './pages/IssueDetail';
 import Analytics from './pages/Analytics';
 import Notifications from './pages/Notifications';
 import Help from './pages/Help';
+import AllIssues from './pages/AllIssues';
+import FacilitiesHelp from './pages/FacilitiesHelp';
 
 const PrivateRoute = ({ children, roles }) => {
   const { user, loading } = React.useContext(AuthContext);
@@ -41,41 +43,61 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route path="/dashboard" element={
             <PrivateRoute>
               <StudentDashboard />
             </PrivateRoute>
           } />
+
           <Route path="/facilities" element={
             <PrivateRoute roles={['facilities','staff','admin']}>
               <FacilitiesDashboard />
             </PrivateRoute>
           } />
+
           <Route path="/submit" element={
             <PrivateRoute>
               <SubmitIssue />
             </PrivateRoute>
           } />
+
           <Route path="/issues/:id" element={
             <PrivateRoute>
               <IssueDetail />
             </PrivateRoute>
           } />
+
           <Route path="/analytics" element={
             <PrivateRoute roles={['facilities','staff','admin']}>
               <Analytics />
             </PrivateRoute>
           } />
+
           <Route path="/notifications" element={
             <PrivateRoute>
               <Notifications />
             </PrivateRoute>
           } />
+
           <Route path="/help" element={
             <PrivateRoute>
               <Help />
             </PrivateRoute>
           } />
+
+          <Route path="/allissues" element={
+            <PrivateRoute roles={['facilities','staff','admin']}>
+              <AllIssues />
+            </PrivateRoute>
+          } />
+
+          <Route path="/facilitieshelp" element={
+            <PrivateRoute roles={['facilities','staff','admin']}>
+              <FacilitiesHelp />
+            </PrivateRoute>
+          } />
+
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>

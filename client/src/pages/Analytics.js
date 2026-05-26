@@ -11,12 +11,12 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true);
 
   const NAV = [
-    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities' },
-    { icon:'ti-list-check',       label:'All Issues',   path:'/facilities' },
-    { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics', active:true },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities', active:true },
+    { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
+    { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
-    { icon:'ti-help',             label:'Help',         path:'/help' },
-  ];
+    { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
+];
 
   useEffect(() => {
     const canvas = canvasRef.current;

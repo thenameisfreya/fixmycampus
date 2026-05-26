@@ -40,10 +40,10 @@ const FILTERS = ['All','New','In Progress','Awaiting Parts','Resolved'];
 
 const NAV = [
   { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/facilities', active:true },
-  { icon:'ti-list-check',       label:'All Issues',   path:'/facilities' },
+  { icon:'ti-list-check',       label:'All Issues',   path:'/allissues' },
   { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
   { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
-  { icon:'ti-help',             label:'Help',         path:'/help' },
+  { icon:'ti-help',             label:'Help',         path:'/facilitieshelp' },
 ];
 
 const timeAgo = (dateStr) => {
@@ -71,7 +71,6 @@ const FacilitiesDashboard = () => {
   const [note, setNote] = useState('');
   const [notes, setNotes] = useState({});
   const [updating, setUpdating] = useState(false);
-  const [showPhoto, setShowPhoto] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -324,7 +323,7 @@ const FacilitiesDashboard = () => {
                 const strip = PRIORITY_STRIP[issue.priority]||'#3b82f6';
                 return (
                   <div key={issue._id}
-                    onClick={() => { setSelected(issue); setNewStatus(issue.status); setAssignedTo(''); setShowPhoto(false); }}
+                    onClick={() => { setSelected(issue); setNewStatus(issue.status); setAssignedTo('');  }}
                     style={{ padding:'13px 14px 13px 12px', borderBottom:'1px solid #f0f0f0', cursor:'pointer', transition:'background 0.15s', background:isSelected?'#f0fdf4':'transparent', borderLeft:`4px solid ${isSelected?'#16a34a':strip}` }}
                     onMouseEnter={e => { if(!isSelected) e.currentTarget.style.background='#f9fafb'; }}
                     onMouseLeave={e => { if(!isSelected) e.currentTarget.style.background='transparent'; }}
