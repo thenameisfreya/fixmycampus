@@ -9,6 +9,7 @@ const StudentDashboard = () => {
   const canvasRef = useRef(null);
   const [issues, setIssues] = useState([]);
   const [filter, setFilter] = useState('All');
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -155,54 +156,62 @@ const StudentDashboard = () => {
   const filters = ['All', 'New', 'In Progress', 'Awaiting Parts', 'Resolved'];
 
   const NAV = [
-    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/dashboard',     active:true },
+    { icon:'ti-layout-dashboard', label:'Dashboard',     path:'/dashboard', active:true },
     { icon:'ti-plus',             label:'Report Issue',  path:'/submit' },
-    { icon:'ti-list-check',       label:'My Reports',   path:'/dashboard',     badge: issues.length },
+    { icon:'ti-list-check',       label:'My Reports',   path:'/dashboard', badge: issues.length },
     { icon:'ti-bell',             label:'Notifications', path:'/notifications' },
-    { icon:'ti-chart-bar',        label:'Analytics',    path:'/analytics' },
     { icon:'ti-help',             label:'Help',         path:'/help' },
   ];
+
+  const sidebarWidth = collapsed ? '52px' : '200px';
 
   return (
     <div style={{ minHeight:'100vh', display:'flex', fontFamily:"'Segoe UI',sans-serif", background:'#eef0f5', position:'relative' }}>
       <canvas ref={canvasRef} style={{ position:'fixed', inset:0, zIndex:1, pointerEvents:'none' }} />
 
-      <div style={{ width:'200px', background:'#1a1a2e', display:'flex', flexDirection:'column', padding:'20px 0', flexShrink:0, zIndex:10, position:'fixed', top:0, left:0, bottom:0 }}>
-        <div style={{ padding:'0 16px 20px', borderBottom:'1px solid rgba(255,255,255,0.08)', marginBottom:'16px' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-            <div style={{ width:'30px', height:'30px', borderRadius:'8px', background:'linear-gradient(135deg,#00e87a,#00b85e)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 12px rgba(0,232,122,0.35)' }}>
-              <span style={{ color:'#1a1a2e', fontWeight:'900', fontSize:'14px' }}>R</span>
+      <div style={{ width:sidebarWidth, background:'#1a1a2e', display:'flex', flexDirection:'column', padding:'20px 0', flexShrink:0, zIndex:10, position:'fixed', top:0, left:0, bottom:0, transition:'width 0.3s ease', overflow:'hidden' }}>
+        <div style={{ padding:'0 12px 18px', borderBottom:'1px solid rgba(255,255,255,0.08)', marginBottom:'14px', display:'flex', alignItems:'center', justifyContent:'space-between', minWidth:0 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'8px', overflow:'hidden', flex:1, minWidth:0 }}>
+            <div style={{ width:'28px', height:'28px', borderRadius:'7px', background:'linear-gradient(135deg,#00e87a,#00b85e)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 10px rgba(0,232,122,0.3)', flexShrink:0 }}>
+              <span style={{ color:'#1a1a2e', fontWeight:'900', fontSize:'12px' }}>R</span>
             </div>
-            <span style={{ color:'#fff', fontWeight:'700', fontSize:'13px', letterSpacing:'2px' }}>REFICERE</span>
+            <span style={{ color:'#fff', fontWeight:'700', fontSize:'12px', letterSpacing:'2px', whiteSpace:'nowrap', opacity: collapsed ? 0 : 1, transition:'opacity 0.2s' }}>REFICERE</span>
           </div>
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ background:'rgba(255,255,255,0.08)', border:'none', borderRadius:'6px', width:'22px', height:'22px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0, marginLeft:'4px' }}
+          >
+            <i className="ti ti-chevron-left" style={{ fontSize:'12px', color:'rgba(255,255,255,0.5)', transform: collapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.3s', display:'block' }} aria-hidden="true" />
+          </button>
         </div>
 
         {NAV.map((item, index) => (
           <div
             key={index}
             onClick={() => navigate(item.path)}
-            style={{ padding:'9px 16px', margin:'0 8px 3px', borderRadius:'10px', display:'flex', alignItems:'center', gap:'10px', cursor:'pointer', background:item.active?'rgba(0,232,122,0.12)':'transparent', border:item.active?'1px solid rgba(0,232,122,0.25)':'1px solid transparent', transition:'all 0.2s ease' }}
+            title={collapsed ? item.label : ''}
+            style={{ padding:'9px 12px', margin:'0 6px 3px', borderRadius:'10px', display:'flex', alignItems:'center', gap:'10px', cursor:'pointer', background:item.active?'rgba(0,232,122,0.12)':'transparent', border:item.active?'1px solid rgba(0,232,122,0.25)':'1px solid transparent', transition:'all 0.2s ease', minWidth:0 }}
             onMouseEnter={e => { if(!item.active) e.currentTarget.style.background='rgba(255,255,255,0.05)'; }}
             onMouseLeave={e => { if(!item.active) e.currentTarget.style.background='transparent'; }}
           >
-            <i className={'ti '+item.icon} style={{ fontSize:'16px', color:item.active?'#00e87a':'rgba(255,255,255,0.35)' }} aria-hidden="true" />
-            <span style={{ fontSize:'12px', color:item.active?'#00e87a':'rgba(255,255,255,0.35)', fontWeight:item.active?'600':'400' }}>
+            <i className={'ti '+item.icon} style={{ fontSize:'16px', color:item.active?'#00e87a':'rgba(255,255,255,0.35)', flexShrink:0 }} aria-hidden="true" />
+            <span style={{ fontSize:'12px', color:item.active?'#00e87a':'rgba(255,255,255,0.35)', fontWeight:item.active?'600':'400', whiteSpace:'nowrap', opacity: collapsed ? 0 : 1, transition:'opacity 0.15s', overflow:'hidden' }}>
               {item.label}
             </span>
-            {item.badge > 0 && (
-              <span style={{ marginLeft:'auto', background:'#00e87a', color:'#1a1a2e', borderRadius:'10px', padding:'1px 6px', fontSize:'9px', fontWeight:'700' }}>
+            {item.badge > 0 && !collapsed && (
+              <span style={{ marginLeft:'auto', background:'#00e87a', color:'#1a1a2e', borderRadius:'10px', padding:'1px 6px', fontSize:'9px', fontWeight:'700', whiteSpace:'nowrap' }}>
                 {item.badge}
               </span>
             )}
           </div>
         ))}
 
-        <div style={{ marginTop:'auto', padding:'14px 16px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-            <div style={{ width:'30px', height:'30px', borderRadius:'50%', background:'linear-gradient(135deg,#00e87a,#00b85e)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:'700', color:'#1a1a2e', flexShrink:0 }}>
+        <div style={{ marginTop:'auto', padding:'14px 12px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
+            <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:'linear-gradient(135deg,#00e87a,#00b85e)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', fontWeight:'700', color:'#1a1a2e', flexShrink:0 }}>
               {user && user.name.charAt(0).toUpperCase()}
             </div>
-            <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ flex:1, minWidth:0, opacity: collapsed ? 0 : 1, transition:'opacity 0.15s' }}>
               <p style={{ color:'#fff', fontSize:'11px', fontWeight:'500', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                 {user && user.name.split(' ')[0]}
               </p>
@@ -210,46 +219,62 @@ const StudentDashboard = () => {
                 {user && user.role}
               </p>
             </div>
-            <i
-              className="ti ti-logout"
-              onClick={() => { logout(); navigate('/login'); }}
-              style={{ fontSize:'15px', color:'rgba(255,255,255,0.25)', marginLeft:'auto', cursor:'pointer', transition:'color 0.2s', flexShrink:0 }}
-              onMouseEnter={e => e.currentTarget.style.color='#fff'}
-              onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.25)'}
-              aria-hidden="true"
-            />
+            {!collapsed && (
+              <i
+                className="ti ti-logout"
+                onClick={() => { logout(); navigate('/login'); }}
+                style={{ fontSize:'14px', color:'rgba(255,255,255,0.25)', cursor:'pointer', transition:'color 0.2s', flexShrink:0 }}
+                onMouseEnter={e => e.currentTarget.style.color='#fff'}
+                onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.25)'}
+                aria-hidden="true"
+              />
+            )}
           </div>
         </div>
       </div>
 
-      <div style={{ flex:1, marginLeft:'200px', position:'relative', zIndex:5 }}>
-        <div style={{ padding:'24px 28px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', background:'rgba(238,240,245,0.85)', backdropFilter:'blur(10px)', borderBottom:'1px solid rgba(0,0,0,0.06)', position:'sticky', top:0, zIndex:10 }}>
-          <div>
-            <p style={{ color:'#00b85e', fontSize:'10px', letterSpacing:'2.5px', textTransform:'uppercase', margin:'0 0 5px', fontWeight:'600' }}>
-              St Mary's University, Twickenham
-            </p>
-            <h1 style={{ color:'#1a1a2e', fontSize:'22px', fontWeight:'700', margin:0, letterSpacing:'-0.5px' }}>
-              {greeting}, {user && user.name.split(' ')[0]}
-            </h1>
-          </div>
-          <div style={{ display:'flex', gap:'10px', alignItems:'center' }}>
-            <button
-              onClick={() => navigate('/submit')}
-              style={{ padding:'10px 20px', background:'linear-gradient(135deg,#00e87a,#00b85e)', border:'none', borderRadius:'12px', color:'#1a1a2e', fontSize:'12px', fontWeight:'700', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', boxShadow:'0 4px 15px rgba(0,184,94,0.3)', transition:'all 0.2s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0,184,94,0.4)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 15px rgba(0,184,94,0.3)'; }}
-            >
-              <i className="ti ti-plus" style={{ fontSize:'14px' }} aria-hidden="true" />
-              Report Issue
-            </button>
-            <div
-              onClick={() => navigate('/notifications')}
-              style={{ width:'36px', height:'36px', borderRadius:'10px', background:'rgba(255,255,255,0.8)', border:'1px solid rgba(0,0,0,0.08)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', cursor:'pointer', backdropFilter:'blur(8px)' }}
-            >
-              <i className="ti ti-bell" style={{ fontSize:'16px', color:'#6b7280' }} aria-hidden="true" />
-              {newCount > 0 && (
-                <span style={{ position:'absolute', top:'-2px', right:'-2px', width:'9px', height:'9px', background:'#00e87a', borderRadius:'50%', border:'2px solid #eef0f5' }} />
-              )}
+      <div style={{ flex:1, marginLeft:sidebarWidth, position:'relative', zIndex:5, transition:'margin-left 0.3s ease' }}>
+
+        <div style={{ background:'#1a1a2e', padding:'22px 28px', borderBottom:'1px solid rgba(0,232,122,0.25)', position:'relative', overflow:'hidden' }}>
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'2px', background:'linear-gradient(90deg,transparent,#00e87a,#00b85e,transparent)' }} />
+          <div style={{ position:'absolute', top:'-30px', right:'-30px', width:'160px', height:'160px', borderRadius:'50%', background:'rgba(0,232,122,0.05)' }} />
+          <div style={{ position:'absolute', top:'10px', right:'100px', width:'80px', height:'80px', borderRadius:'50%', background:'rgba(0,232,122,0.04)' }} />
+          <p style={{ color:'rgba(0,232,122,0.55)', fontSize:'10px', letterSpacing:'2.5px', textTransform:'uppercase', margin:'0 0 5px', fontWeight:'600', position:'relative' }}>
+            St Mary's University, Twickenham
+          </p>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', position:'relative' }}>
+            <div>
+              <h1 style={{ color:'#fff', fontSize:'22px', fontWeight:'700', margin:'0 0 4px', letterSpacing:'-0.5px' }}>
+                {greeting}, {user && user.name.split(' ')[0]}
+              </h1>
+              <p style={{ color:'rgba(255,255,255,0.35)', fontSize:'12px', margin:0 }}>
+                {issues.length === 0
+                  ? 'No reports submitted yet'
+                  : `You have ${newCount > 0 ? newCount + ' new update' + (newCount > 1 ? 's' : '') : 'no new updates'} and ${inProgressCount} issue${inProgressCount !== 1 ? 's' : ''} in progress`
+                }
+              </p>
+            </div>
+            <div style={{ display:'flex', gap:'10px', alignItems:'center' }}>
+              <button
+                onClick={() => navigate('/submit')}
+                style={{ padding:'10px 20px', background:'#00e87a', border:'none', borderRadius:'12px', color:'#1a1a2e', fontSize:'12px', fontWeight:'700', cursor:'pointer', display:'flex', alignItems:'center', gap:'6px', transition:'all 0.2s ease' }}
+                onMouseEnter={e => { e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0,232,122,0.3)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none'; }}
+              >
+                <i className="ti ti-plus" style={{ fontSize:'14px' }} aria-hidden="true" />
+                Report Issue
+              </button>
+              <div
+                onClick={() => navigate('/notifications')}
+                style={{ width:'38px', height:'38px', borderRadius:'10px', background:'rgba(0,232,122,0.1)', border:'1px solid rgba(0,232,122,0.25)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', cursor:'pointer', transition:'all 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.background='rgba(0,232,122,0.18)'}
+                onMouseLeave={e => e.currentTarget.style.background='rgba(0,232,122,0.1)'}
+              >
+                <i className="ti ti-bell" style={{ fontSize:'18px', color:'rgba(255,255,255,0.8)' }} aria-hidden="true" />
+                {newCount > 0 && (
+                  <span style={{ position:'absolute', top:'-2px', right:'-2px', width:'9px', height:'9px', background:'#00e87a', borderRadius:'50%', border:'2px solid #1a1a2e' }} />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -257,19 +282,19 @@ const StudentDashboard = () => {
         <div style={{ padding:'24px 28px' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'16px', marginBottom:'24px' }}>
             {[
-              { label:'Total Reports', value:issues.length,      icon:'ti-files',        bg:'linear-gradient(135deg,#e0e7ff,#c7d2fe)', iconColor:'#4f46e5', labelColor:'#4f46e5', badge:'ALL' },
-              { label:'New',           value:newCount,           icon:'ti-circle-plus',  bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)', iconColor:'#2563eb', labelColor:'#2563eb', badge:'NEW' },
-              { label:'In Progress',   value:inProgressCount,    icon:'ti-loader',       bg:'linear-gradient(135deg,#fef3c7,#fde68a)', iconColor:'#d97706', labelColor:'#d97706', badge:'WIP' },
-              { label:'Resolved',      value:resolvedCount,      icon:'ti-circle-check', bg:'linear-gradient(135deg,#d1fae5,#a7f3d0)', iconColor:'#059669', labelColor:'#059669', badge:'DONE' }
+              { label:'Total Reports', value:issues.length, icon:'ti-files', borderColor:'#4f46e5', iconColor:'#4f46e5', labelColor:'#4f46e5', badge:'ALL', badgeBg:'#eef2ff' },
+              { label:'New', value:newCount, icon:'ti-circle-plus', borderColor:'#2563eb', iconColor:'#2563eb', labelColor:'#2563eb', badge:'NEW', badgeBg:'#dbeafe' },
+              { label:'In Progress', value:inProgressCount, icon:'ti-loader', borderColor:'#d97706', iconColor:'#d97706', labelColor:'#d97706', badge:'WIP', badgeBg:'#fef3c7' },
+              { label:'Resolved', value:resolvedCount, icon:'ti-circle-check', borderColor:'#059669', iconColor:'#059669', labelColor:'#059669', badge:'DONE', badgeBg:'#d1fae5' }
             ].map((card, index) => (
               <div key={index}
-                style={{ background:card.bg, borderRadius:'18px', padding:'18px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', transition:'transform 0.2s ease', backdropFilter:'blur(8px)' }}
+                style={{ background:'#fff', borderRadius:'16px', padding:'16px', borderTop:'3px solid '+card.borderColor, boxShadow:'0 2px 10px rgba(0,0,0,0.06)', transition:'transform 0.2s ease' }}
                 onMouseEnter={e => e.currentTarget.style.transform='translateY(-3px)'}
                 onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
               >
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px' }}>
                   <i className={'ti '+card.icon} style={{ fontSize:'20px', color:card.iconColor }} aria-hidden="true" />
-                  <span style={{ fontSize:'9px', color:card.iconColor, fontWeight:'700', background:'rgba(255,255,255,0.5)', padding:'2px 7px', borderRadius:'20px' }}>
+                  <span style={{ fontSize:'9px', color:card.iconColor, fontWeight:'700', background:card.badgeBg, padding:'2px 7px', borderRadius:'20px' }}>
                     {card.badge}
                   </span>
                 </div>
@@ -280,7 +305,7 @@ const StudentDashboard = () => {
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 200px', gap:'16px' }}>
-            <div style={{ background:'rgba(255,255,255,0.75)', backdropFilter:'blur(16px)', borderRadius:'18px', overflow:'hidden', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
+            <div style={{ background:'rgba(255,255,255,0.8)', backdropFilter:'blur(16px)', borderRadius:'18px', overflow:'hidden', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
               <div style={{ padding:'16px 20px', borderBottom:'1px solid rgba(0,0,0,0.05)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <h2 style={{ color:'#1a1a2e', fontSize:'14px', fontWeight:'700', margin:0 }}>My Reports</h2>
                 <div style={{ display:'flex', gap:'6px' }}>
@@ -346,7 +371,7 @@ const StudentDashboard = () => {
             </div>
 
             <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
-              <div style={{ background:'rgba(255,255,255,0.75)', backdropFilter:'blur(16px)', borderRadius:'18px', padding:'18px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)', textAlign:'center' }}>
+              <div style={{ background:'rgba(255,255,255,0.8)', backdropFilter:'blur(16px)', borderRadius:'18px', padding:'18px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)', textAlign:'center' }}>
                 <p style={{ color:'#9ca3af', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 14px', fontWeight:'600' }}>Resolution Rate</p>
                 <div style={{ position:'relative', width:'80px', height:'80px', margin:'0 auto 12px' }}>
                   <svg viewBox="0 0 80 80" width="80" height="80">
@@ -369,7 +394,7 @@ const StudentDashboard = () => {
                 <p style={{ color:'#9ca3af', fontSize:'10px', margin:0 }}>{resolvedCount} of {issues.length} resolved</p>
               </div>
 
-              <div style={{ background:'rgba(255,255,255,0.75)', backdropFilter:'blur(16px)', borderRadius:'18px', padding:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
+              <div style={{ background:'rgba(255,255,255,0.8)', backdropFilter:'blur(16px)', borderRadius:'18px', padding:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
                 <p style={{ color:'#9ca3af', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 12px', fontWeight:'600' }}>Priority</p>
                 {[
                   { label:'High', value:highCount, color:'#ef4444', bg:'#fee2e2' },
@@ -388,7 +413,7 @@ const StudentDashboard = () => {
                 ))}
               </div>
 
-              <div style={{ background:'rgba(255,255,255,0.75)', backdropFilter:'blur(16px)', borderRadius:'18px', padding:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
+              <div style={{ background:'rgba(255,255,255,0.8)', backdropFilter:'blur(16px)', borderRadius:'18px', padding:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', border:'1px solid rgba(255,255,255,0.9)' }}>
                 <p style={{ color:'#9ca3af', fontSize:'10px', letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 10px', fontWeight:'600' }}>Quick Actions</p>
                 <button onClick={() => navigate('/submit')}
                   style={{ width:'100%', padding:'9px', background:'linear-gradient(135deg,#00e87a,#00b85e)', border:'none', borderRadius:'10px', color:'#1a1a2e', fontSize:'11px', fontWeight:'700', cursor:'pointer', marginBottom:'8px', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', transition:'all 0.2s ease' }}
