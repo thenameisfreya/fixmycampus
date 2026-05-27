@@ -61,8 +61,6 @@ const CampusMap = () => {
     return null;
   };
 
-  const filtered = filter === 'All' ? issues : issues.filter(i => i.status === filter);
-
   const STATUS_BADGE = {
     'New':            { background:'#ede9fe', color:'#7c3aed' },
     'In Progress':    { background:'#fef3c7', color:'#d97706' },
