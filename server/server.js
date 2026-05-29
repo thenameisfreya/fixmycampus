@@ -14,10 +14,24 @@ const app = express();
 
 app.use(helmet());
 app.use(express.json());
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://fixmycampus.vercel.app',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 app.use('/api/users', userRoutes);
@@ -25,7 +39,7 @@ app.use('/api/issues', issueRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-app.get('/api/status', (req, res) => res.json({ 
+app.get('/api/status', (req, res) => res.json({
   message: 'Reficere API is running',
   timestamp: new Date()
 }));
