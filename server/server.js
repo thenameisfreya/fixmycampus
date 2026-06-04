@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const issueRoutes = require('./routes/issues');
@@ -13,11 +14,27 @@ const handleErrors = require('./middleware/handleErrors');
 const app = express();
 
 app.use(helmet());
+
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { error: 'Too many requests, please try again later.' }
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many login attempts, please try again later.' }
+});
+
+app.use(globalLimiter);
+
 app.use(express.json());
 
 const allowedOrigins = [
   'http://localhost:3000',
   'https://fixmycampus.vercel.app',
+  'https://reficere.vercel.app',
   process.env.CLIENT_URL
 ].filter(Boolean);
 
@@ -33,6 +50,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+app.use('/api/users/login', authLimiter);
+app.use('/api/users/register', authLimiter);
 
 app.use('/api/users', userRoutes);
 app.use('/api/issues', issueRoutes);
